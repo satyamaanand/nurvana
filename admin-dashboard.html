@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard – Nurvana</title>
+  <link rel="shortcut icon" href="images/favicon.png" type="image/png">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <style>
+    /* Status Badge Overrides for admin lists */
+    .admin-status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    .status-pending { background-color: #fef3c7; color: #d97706; }
+    .status-confirmed { background-color: #e6ede8; color: #5e7a64; }
+    .status-shipped { background-color: #e0f2fe; color: #0284c7; }
+    .status-delivered { background-color: #d1fae5; color: #059669; }
+    .status-cancelled { background-color: #fee2e2; color: #dc2626; }
+    
+    .admin-select-status {
+      border: 1px solid var(--border-color);
+      background-color: var(--bg-white);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    /* Layout table styles */
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .admin-table th, .admin-table td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+    .admin-table th {
+      background-color: var(--bg-secondary);
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .admin-table tr:hover {
+      background-color: var(--bg-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Glassmorphism Sticky Header -->
+  <header class="site-header">
+    <div class="container header-container">
+      <a href="index.html" class="site-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Nurvana
+      </a>
+      
+      <nav>
+        <ul class="nav-menu">
+          <!-- Populated dynamically by main.js -->
+        </ul>
+      </nav>
+      
+      <div class="header-actions">
+        <!-- Populated dynamically by main.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Admin Layout Section -->
+  <div class="admin-layout">
+
+    <!-- Main Content Area -->
+    <main class="admin-main">
+      
+      <!-- SECTION: OVERVIEW -->
+      <section id="admin-section-overview" class="admin-tab-section">
+        <h2 style="font-size: 1.75rem; font-weight:800; margin-bottom: 24px;">Overview Dashboard</h2>
+        
+        <!-- KPI Metrics Grid -->
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <div>
+              <div class="admin-stat-label">Total Registered Customers</div>
+              <div class="admin-stat-val" id="counter-users">0</div>
+            </div>
+            <div class="admin-stat-icon">👥</div>
+          </div>
+          <div class="admin-stat-card">
+            <div>
+              <div class="admin-stat-label">Nursery Plant Specs</div>
+              <div class="admin-stat-val" id="counter-plants">0</div>
+            </div>
+            <div class="admin-stat-icon">🌿</div>
+          </div>
+          <div class="admin-stat-card">
+            <div>
+              <div class="admin-stat-label">Customer Orders Placed</div>
+              <div class="admin-stat-val" id="counter-orders">0</div>
+            </div>
+            <div class="admin-stat-icon">📦</div>
+          </div>
+          <div class="admin-stat-card">
+            <div>
+              <div class="admin-stat-label">Low Stock Alerts</div>
+              <div class="admin-stat-val" id="counter-lowstock" style="color: var(--color-danger);">0</div>
+            </div>
+            <div class="admin-stat-icon">⚠️</div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+          <!-- Order Revenue Sales Chart (Bar Chart) -->
+          <div class="chart-card">
+            <h3 class="chart-title">Monthly Revenue Statistics</h3>
+            <div class="chart-container" id="bar-chart-container">
+              <!-- Rendered dynamically by admin.js -->
+            </div>
+          </div>
+
+          <!-- Inventory Allocation (Donut Chart) -->
+          <div class="chart-card">
+            <h3 class="chart-title">Stock Allocation by Category</h3>
+            <div class="donut-chart" id="category-donut-chart" style="background: conic-gradient(var(--primary) 0% 100%);"></div>
+            <div class="donut-legend" id="donut-legend-container">
+              <!-- Legend items populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Logs Split Grid -->
+        <div class="grid" style="grid-template-columns: 1.2fr 0.8fr; gap: 30px;">
+          <!-- Recent Orders list -->
+          <div class="form-card" style="padding: 24px;">
+            <h3 style="font-size: 1.1rem; font-weight:700; margin-bottom: 16px;">Recent Orders</h3>
+            <div style="overflow-x: auto;">
+              <table style="width:100%; border-collapse:collapse; font-size:0.875rem;" id="recent-orders-list-table">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border-color); text-align:left;">
+                    <th style="padding:8px 0;">Order ID</th>
+                    <th style="padding:8px;">Customer</th>
+                    <th style="padding:8px;">Date</th>
+                    <th style="padding:8px;">Amount</th>
+                    <th style="padding:8px 0; text-align:right;">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="recent-orders-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Critical stock alerts list -->
+          <div class="form-card" style="padding: 24px; border-color: var(--color-danger);">
+            <h3 style="font-size: 1.1rem; font-weight:700; margin-bottom: 16px; color: var(--color-danger); display:flex; align-items:center; gap: 8px;">
+              <span>⚠️</span> Critical Low Stock Alert
+            </h3>
+            <div style="overflow-x: auto;">
+              <table style="width:100%; border-collapse:collapse; font-size:0.85rem;" id="critical-stock-table">
+                <thead>
+                  <tr style="border-bottom:1px solid var(--border-color); text-align:left;">
+                    <th style="padding:8px 0;">Plant Name</th>
+                    <th style="padding:8px;">Price</th>
+                    <th style="padding:8px 0; text-align:right;">Left</th>
+                  </tr>
+                </thead>
+                <tbody id="lowstock-table-body">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: MANAGE PLANTS -->
+      <section id="admin-section-plants" class="admin-tab-section" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+          <h2 style="font-size: 1.75rem; font-weight:800;">Plant Catalog Inventory</h2>
+          <button class="btn btn-primary btn-sm" id="btn-open-add-plant-modal">+ Add Plant Spec</button>
+        </div>
+
+        <div style="background-color: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Plant Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock level</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-plants-table-body">
+              <!-- Dynamic inventory rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION: CUSTOMER ORDERS -->
+      <section id="admin-section-orders" class="admin-tab-section" style="display: none;">
+        <h2 style="font-size: 1.75rem; font-weight:800; margin-bottom: 24px;">Customer Orders Manager</h2>
+        
+        <div style="background-color: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date Placed</th>
+                <th>Total Value</th>
+                <th>Tracking Status / Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-orders-table-body">
+              <!-- Dynamic orders list -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION: USER DIRECTORY -->
+      <section id="admin-section-users" class="admin-tab-section" style="display: none;">
+        <h2 style="font-size: 1.75rem; font-weight:800; margin-bottom: 24px;">Registered Users Directory</h2>
+        
+        <div style="background-color: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Full Name</th>
+                <th>Email Address</th>
+                <th>Account Role</th>
+                <th>Registered Date</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-table-body">
+              <!-- Dynamic users list -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION: CUSTOMER MESSAGES -->
+      <section id="admin-section-contacts" class="admin-tab-section" style="display: none;">
+        <h2 style="font-size: 1.75rem; font-weight:800; margin-bottom: 24px;">Customer Contact Inquiries</h2>
+        
+        <div style="background-color: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Sender Info</th>
+                <th>Subject & Inquiry Message</th>
+                <th>Date Sent</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="admin-contacts-table-body">
+              <!-- Dynamic contact entries -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- MODAL: ADD NEW PLANT SPEC -->
+  <div class="modal-overlay" id="add-plant-modal-overlay">
+    <div class="modal-card" style="max-width: 800px;">
+      <form id="admin-add-plant-form" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h3 class="modal-title">Add New Plant Spec</h3>
+          <span class="modal-close" onclick="closeModal('add-plant-modal-overlay')">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 30px;">
+            <!-- Specs Left -->
+            <div>
+              <div class="form-group">
+                <label for="add-plant-name">Plant Name</label>
+                <input type="text" id="add-plant-name" name="name" class="form-control" placeholder="e.g. Golden Pothos" required>
+              </div>
+              <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                  <label for="add-plant-price">Price (₹)</label>
+                  <input type="number" id="add-plant-price" name="price" class="form-control" placeholder="e.g. 450" required min="0">
+                </div>
+                <div class="form-group">
+                  <label for="add-plant-stock">Initial Stock</label>
+                  <input type="number" id="add-plant-stock" name="stock" class="form-control" placeholder="e.g. 15" required min="0">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="add-plant-category">Plant Category</label>
+                <select id="add-plant-category" name="category" class="form-control" required style="cursor:pointer; padding: 12px 16px;">
+                  <!-- Dynamic categories option -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="add-plant-description">Plant Description</label>
+                <textarea id="add-plant-description" name="description" class="form-control" rows="4" placeholder="Describe the plant's aesthetics, light guidelines, characteristics..." required></textarea>
+              </div>
+              <div class="form-group">
+                <label>Plant Images (Max 5)</label>
+                <input type="file" name="images" multiple class="form-control" accept="image/*" style="padding: 10px;">
+              </div>
+            </div>
+
+            <!-- Care Guide Right -->
+            <div>
+              <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-sm);">
+                <h4 style="font-weight: 800; font-size: 0.95rem; margin-bottom: 16px; color: var(--primary);">🌿 Care Guidelines</h4>
+                <div class="form-group">
+                  <label for="add-care-light">Sunlight Needs</label>
+                  <input type="text" id="add-care-light" name="light" class="form-control" value="Bright indirect sunlight">
+                </div>
+                <div class="form-group">
+                  <label for="add-care-water">Watering Frequency</label>
+                  <input type="text" id="add-care-water" name="water" class="form-control" value="Water when topsoil dries">
+                </div>
+                <div class="form-group">
+                  <label for="add-care-soil">Soil Requirements</label>
+                  <input type="text" id="add-care-soil" name="soil" class="form-control" value="Well-draining potting soil mix">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label for="add-care-temp">Ideal Temperature</label>
+                  <input type="text" id="add-care-temp" name="temperature" class="form-control" value="15°C - 30°C">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('add-plant-modal-overlay')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Add Inventory</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT PLANT SPEC -->
+  <div class="modal-overlay" id="edit-plant-modal-overlay">
+    <div class="modal-card" style="max-width: 800px;">
+      <form id="admin-edit-plant-form" enctype="multipart/form-data">
+        <input type="hidden" id="edit-plant-id" name="id">
+        <div class="modal-header">
+          <h3 class="modal-title">Modify Plant Spec</h3>
+          <span class="modal-close" onclick="closeModal('edit-plant-modal-overlay')">&times;</span>
+        </div>
+        <div class="modal-body">
+          <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 30px;">
+            <!-- Specs Left -->
+            <div>
+              <div class="form-group">
+                <label for="edit-plant-name">Plant Name</label>
+                <input type="text" id="edit-plant-name" name="name" class="form-control" required>
+              </div>
+              <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                  <label for="edit-plant-price">Price (₹)</label>
+                  <input type="number" id="edit-plant-price" name="price" class="form-control" required min="0">
+                </div>
+                <div class="form-group">
+                  <label for="edit-plant-stock">Stock Level</label>
+                  <input type="number" id="edit-plant-stock" name="stock" class="form-control" required min="0">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="edit-plant-category">Plant Category</label>
+                <select id="edit-plant-category" name="category" class="form-control" required style="cursor:pointer; padding: 12px 16px;">
+                  <!-- Dynamic categories option -->
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="edit-plant-description">Plant Description</label>
+                <textarea id="edit-plant-description" name="description" class="form-control" rows="4" required></textarea>
+              </div>
+              <div class="form-group">
+                <label>Add More Images (Optional)</label>
+                <input type="file" name="images" multiple class="form-control" accept="image/*" style="padding: 10px;">
+              </div>
+            </div>
+
+            <!-- Care Guide Right -->
+            <div>
+              <div style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 20px; border-radius: var(--radius-sm);">
+                <h4 style="font-weight: 800; font-size: 0.95rem; margin-bottom: 16px; color: var(--primary);">🌿 Care Guidelines</h4>
+                <div class="form-group">
+                  <label for="edit-care-light">Sunlight Needs</label>
+                  <input type="text" id="edit-care-light" name="light" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="edit-care-water">Watering Frequency</label>
+                  <input type="text" id="edit-care-water" name="water" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="edit-care-soil">Soil Requirements</label>
+                  <input type="text" id="edit-care-soil" name="soil" class="form-control">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label for="edit-care-temp">Ideal Temperature</label>
+                  <input type="text" id="edit-care-temp" name="temperature" class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="closeModal('edit-plant-modal-overlay')">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Premium Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="site-logo" style="font-size:1.5rem; margin-bottom: 16px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Nurvana
+        </a>
+        <p>Premium nursery plant sales, organic care advice, and dashboard tracking tools for modern spaces.</p>
+        <div style="margin-top: 24px;">
+          <a href="https://www.linkedin.com/in/satyamaanand/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem;" aria-label="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            <span>Contact Developer</span>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-title">Links</h4>
+        <ul class="footer-links">
+          <li><a href="buy.html">Shop Plants</a></li>
+          <li><a href="services.html">Nursery Services</a></li>
+          <li><a href="gallery.html">Visual Gallery</a></li>
+          <li><a href="about.html">About Company</a></li>
+          <li><a href="contact.html">Get in Touch</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-title">Contact</h4>
+        <ul class="footer-links" style="color: var(--text-muted); font-size: 0.95rem;">
+          <li>📞 +91 87XXXXXXXX</li>
+          <li>📧 support@nurvana.com</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-title">Our Location</h4>
+        <div style="border-radius: var(--radius-sm); overflow:hidden; border: 1px solid var(--border-color); height:120px;">
+          <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB2NIWI3Tv9iDPrlnowr_0ZqZWoAQydKJU&q=Techno%20Main%20Salt%20Lake%2C%20Techno%20India%2C%20EM%20Block%2C%20Sector%20V%2C%20Bidhannagar%2C%20Kolkata%2C%20West%20Bengal%2C%20India&maptype=roadmap" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-title">Subscribe to the Green Life</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px; line-height: 1.4;">Receive exclusive plant tips, new catalog restock announcements, and 10% off your first purchase.</p>
+        <form id="newsletter-form" style="display:flex; flex-direction:column; gap:10px;">
+          <input type="email" placeholder="Your Email Address" required class="form-control" style="background-color:var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.9rem;">
+          <button type="submit" class="btn btn-primary btn-sm" style="align-self: flex-start; padding: 10px 20px;">Join Now</button>
+        </form>
+      </div>
+    </div>
+    <div class="container footer-copyright">
+      <span>&copy; 2026 Nurvana. All rights reserved.</span>
+      <span>Designed with nature in mind.</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    // Modal toggle helper
+    function openModal(id) {
+      const overlay = document.getElementById(id);
+      if (overlay) overlay.classList.add('active');
+    }
+    function closeModal(id) {
+      const overlay = document.getElementById(id);
+      if (overlay) overlay.classList.remove('active');
+    }
+
+    // Modal background click triggers closing
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          overlay.classList.remove('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
