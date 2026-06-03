@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders – Nurvana</title>
+  <link rel="shortcut icon" href="../assets/images/favicon.png" type="image/png">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  
+  <!-- Custom user dashboard overrides -->
+  <style>
+    .order-status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+    .order-status-pending { background-color: #fef3c7; color: #d97706; }
+    .order-status-confirmed { background-color: #e6ede8; color: #5e7a64; }
+    .order-status-shipped { background-color: #e0f2fe; color: #0284c7; }
+    .order-status-delivered { background-color: #d1fae5; color: #059669; }
+    .order-status-cancelled { background-color: #fee2e2; color: #dc2626; }
+  </style>
+</head>
+<body>
+
+  <!-- Glassmorphism Sticky Header -->
+  <header class="site-header">
+    <div class="container header-container">
+      <a href="index.html" class="site-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Nurvana
+      </a>
+      
+      <nav>
+        <ul class="nav-menu">
+          <!-- Populated dynamically by main.js -->
+        </ul>
+      </nav>
+      
+      <div class="header-actions">
+        <!-- Populated dynamically by main.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Dashboard Container -->
+  <main class="py-section" style="padding-top: calc(var(--header-height) + 40px);">
+    <div class="container">
+      <!-- Breadcrumbs and header -->
+      <div style="margin-bottom: 30px;">
+        <span style="font-size: 0.85rem; font-weight:700; text-transform:uppercase; color: var(--accent);">My Account</span>
+        <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em; margin-top: 4px;">Orders dashboard</h1>
+      </div>
+
+      <div class="account-grid">
+        <!-- Left: Profile Info Card -->
+        <div>
+          <div class="form-card text-center" style="padding: 32px 24px;">
+            <div id="profile-avatar" style="width: 72px; height: 72px; border-radius: 50%; background-color: var(--accent-light); color: var(--primary); display: inline-flex; align-items: center; justify-content: center; font-size: 1.75rem; font-weight: 800; border: 2px solid var(--border-color); margin-bottom: 16px;">
+              U
+            </div>
+            <h3 id="profile-name" style="font-size: 1.25rem; font-weight: 800; margin-bottom: 4px;">User Name</h3>
+            <p id="profile-email" style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">email@example.com</p>
+            <span id="profile-role" class="badge badge-success">Customer</span>
+          </div>
+        </div>
+
+        <!-- Right: Order Logs -->
+        <div id="orders-section-container">
+          <!-- Empty State -->
+          <div id="orders-empty-state" style="display: none; text-align: center; padding: 60px 20px; background-color: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5; margin-bottom: 16px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            <h3 style="font-weight: 700;">No orders found</h3>
+            <p style="color: var(--text-muted); margin-top: 6px;">You have not placed any orders yet.</p>
+            <a href="plants.html" class="btn btn-secondary btn-sm mt-3" style="display:inline-flex; width:auto;">Browse Plants</a>
+          </div>
+
+          <!-- Orders Table -->
+          <div id="orders-table-container" style="display: none; background-color: var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);">
+            <table class="orders-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Date Placed</th>
+                  <th>Grand Total</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="orders-table-body">
+                <!-- Dynamically loaded order rows -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Clean Custom Modal Overlay (Vanilla JS) -->
+  <div class="modal-overlay" id="order-details-modal-overlay">
+    <div class="modal-card" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Order Details <span id="modal-order-id-label" style="font-size:0.85rem; font-weight: normal; color:var(--text-muted); margin-left:12px;">#ID</span></h3>
+        <span class="modal-close" id="modal-close-trigger">&times;</span>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Stepper Progress Tracker -->
+        <div id="modal-tracker-stepper-wrapper">
+          <!-- Stepper container dynamically injected -->
+        </div>
+
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
+          <!-- Left: Address card -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 800; text-transform: uppercase; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              Delivery Address
+            </h4>
+            <div id="modal-shipping-address" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 16px; font-size: 0.9rem; line-height: 1.5;">
+              <!-- Dynamic address -->
+            </div>
+          </div>
+
+          <!-- Right: Tracking updates logs -->
+          <div>
+            <h4 style="font-size: 0.95rem; font-weight: 800; text-transform: uppercase; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Status Updates
+            </h4>
+            <ul id="modal-tracker-logs" style="list-style: none; padding: 0; max-height: 150px; overflow-y: auto;">
+              <!-- Dynamic status logs -->
+            </ul>
+          </div>
+        </div>
+
+        <!-- Ordered Items list -->
+        <div style="margin-top: 40px;">
+          <h4 style="font-size: 0.95rem; font-weight: 800; text-transform: uppercase; color: var(--primary); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            Items Ordered
+          </h4>
+          <div id="modal-order-items" style="display:flex; flex-direction:column; gap: 16px;">
+            <!-- Dynamic items items -->
+          </div>
+          
+          <div style="display: flex; justify-content: flex-end; align-items: center; gap: 16px; margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <span style="font-weight: 700; font-size: 1rem;">Order Total:</span>
+            <span id="modal-order-total" style="font-size: 1.6rem; font-weight: 800; color: var(--primary);">₹0.00</span>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" id="modal-close-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Premium Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="site-logo" style="font-size:1.5rem; margin-bottom: 16px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Nurvana
+        </a>
+        <p>Premium nursery plant sales, organic care advice, and dashboard tracking tools for modern spaces.</p>
+        <div style="margin-top: 24px;">
+          <a href="https://www.linkedin.com/in/satyamaanand/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem;" aria-label="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            <span>Contact Developer</span>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-title">Links</h4>
+        <ul class="footer-links">
+          <li><a href="plants.html">Shop Plants</a></li>
+          <li><a href="services.html">Nursery Services</a></li>
+          <li><a href="gallery.html">Visual Gallery</a></li>
+          <li><a href="about.html">About Company</a></li>
+          <li><a href="contact.html">Get in Touch</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-title">Contact</h4>
+        <ul class="footer-links" style="color: var(--text-muted); font-size: 0.95rem;">
+          <li>📞 +91 87XXXXXXXX</li>
+          <li>📧 support@nurvana.com</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-title">Our Location</h4>
+        <div style="border-radius: var(--radius-sm); overflow:hidden; border: 1px solid var(--border-color); height:120px;">
+          <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB2NIWI3Tv9iDPrlnowr_0ZqZWoAQydKJU&q=Techno%20Main%20Salt%20Lake%2C%20Techno%20India%2C%20EM%20Block%2C%20Sector%20V%2C%20Bidhannagar%2C%20Kolkata%2C%20West%20Bengal%2C%20India&maptype=roadmap" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-title">Subscribe to the Green Life</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px; line-height: 1.4;">Receive exclusive plant tips, new catalog restock announcements, and 10% off your first purchase.</p>
+        <form id="newsletter-form" style="display:flex; flex-direction:column; gap:10px;">
+          <input type="email" placeholder="Your Email Address" required class="form-control" style="background-color:var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.9rem;">
+          <button type="submit" class="btn btn-primary btn-sm" style="align-self: flex-start; padding: 10px 20px;">Join Now</button>
+        </form>
+      </div>
+    </div>
+    <div class="container footer-copyright">
+      <span>&copy; 2026 Nurvana. All rights reserved.</span>
+      <span>Designed with nature in mind.</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/account.js"></script>
+</body>
+</html>

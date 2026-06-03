@@ -1,0 +1,10 @@
+{
+  "name": "nurvana",
+  "version": "1.0.0",
+  "description": "Nurvana - Online Plant Nursery Management System",
+  "scripts": {
+    "start": "npm start --prefix backend",
+    "seed": "npm run seed --prefix backend",
+    "postinstall": "npm install --prefix backend"
+  }
+}

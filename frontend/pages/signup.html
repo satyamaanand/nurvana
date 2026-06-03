@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register Account – Nurvana</title>
+  <link rel="shortcut icon" href="../assets/images/favicon.png" type="image/png">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/style.css">
+  
+  <style>
+    .auth-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - var(--header-height));
+      padding: 40px 24px;
+    }
+    .auth-card-wrapper {
+      max-width: 480px;
+      width: 100%;
+    }
+    .auth-action-link {
+      display: inline-block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+    }
+    .auth-action-link:hover {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Glassmorphism Sticky Header -->
+  <header class="site-header">
+    <div class="container header-container">
+      <a href="index.html" class="site-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        Nurvana
+      </a>
+      
+      <nav>
+        <ul class="nav-menu">
+          <!-- Populated dynamically by main.js -->
+        </ul>
+      </nav>
+      
+      <div class="header-actions">
+        <!-- Populated dynamically by main.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Centered Auth Card -->
+  <main class="auth-container" style="margin-top: var(--header-height);">
+    <div class="auth-card-wrapper">
+      <div class="form-card">
+        <!-- Registration Form -->
+        <form id="signup-form">
+          <h2 style="font-size:1.5rem; font-weight:800; margin-bottom: 24px; color:var(--primary);">Create Account</h2>
+          
+          <div class="form-group">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" class="form-control" required placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label for="signup-email">Email Address</label>
+            <input type="email" id="signup-email" class="form-control" required placeholder="name@email.com">
+          </div>
+          <div class="form-group">
+            <label for="signup-phone">Phone Number</label>
+            <input type="tel" id="signup-phone" class="form-control" required placeholder="e.g. +91 98765 43210">
+          </div>
+          <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" class="form-control" required placeholder="Min. 6 characters">
+          </div>
+          <div class="form-group" style="margin-bottom: 28px;">
+            <label for="signup-confirm-password">Confirm Password</label>
+            <input type="password" id="signup-confirm-password" class="form-control" required placeholder="Confirm your password">
+          </div>
+          
+          <button type="submit" class="btn btn-primary btn-block" style="margin-bottom: 20px;">Sign Up</button>
+          
+          <div style="text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+            Already have an account? <a href="login.html" class="auth-action-link" style="color: var(--primary); font-weight: 700;">Login here</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Premium Footer -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="site-logo" style="font-size:1.5rem; margin-bottom: 16px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Nurvana
+        </a>
+        <p>Premium nursery plant sales, organic care advice, and dashboard tracking tools for modern spaces.</p>
+        <div style="margin-top: 24px;">
+          <a href="https://www.linkedin.com/in/satyamaanand/" target="_blank" rel="noopener noreferrer" style="color: var(--accent); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; font-weight: 600; font-size: 0.95rem;" aria-label="LinkedIn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle;">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
+            <span>Contact Developer</span>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-title">Links</h4>
+        <ul class="footer-links">
+          <li><a href="plants.html">Shop Plants</a></li>
+          <li><a href="services.html">Nursery Services</a></li>
+          <li><a href="gallery.html">Visual Gallery</a></li>
+          <li><a href="about.html">About Company</a></li>
+          <li><a href="contact.html">Get in Touch</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-title">Contact</h4>
+        <ul class="footer-links" style="color: var(--text-muted); font-size: 0.95rem;">
+          <li>📞 +91 87XXXXXXXX</li>
+          <li>📧 support@nurvana.com</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-title">Our Location</h4>
+        <div style="border-radius: var(--radius-sm); overflow:hidden; border: 1px solid var(--border-color); height:120px;">
+          <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyB2NIWI3Tv9iDPrlnowr_0ZqZWoAQydKJU&q=Techno%20Main%20Salt%20Lake%2C%20Techno%20India%2C%20EM%20Block%2C%20Sector%20V%2C%20Bidhannagar%2C%20Kolkata%2C%20West%20Bengal%2C%20India&maptype=roadmap" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-title">Subscribe to the Green Life</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px; line-height: 1.4;">Receive exclusive plant tips, new catalog restock announcements, and 10% off your first purchase.</p>
+        <form id="newsletter-form" style="display:flex; flex-direction:column; gap:10px;">
+          <input type="email" placeholder="Your Email Address" required class="form-control" style="background-color:var(--bg-white); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.9rem;">
+          <button type="submit" class="btn btn-primary btn-sm" style="align-self: flex-start; padding: 10px 20px;">Join Now</button>
+        </form>
+      </div>
+    </div>
+    <div class="container footer-copyright">
+      <span>&copy; 2026 Nurvana. All rights reserved.</span>
+      <span>Designed with nature in mind.</span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script>
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const phone = document.getElementById('signup-phone').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+      // Confirm passwords match
+      if (password !== confirmPassword) {
+        showToast('Passwords do not match.', 'error');
+        return;
+      }
+
+      if (password.length < 6) {
+        showToast('Password must be at least 6 characters.', 'error');
+        return;
+      }
+
+      try {
+        const res = await authFetch('/auth/register', {
+          method: 'POST',
+          body: JSON.stringify({ name, email, phone, password })
+        });
+
+        if (res.success) {
+          showToast('Account created successfully! Redirection to login...', 'success');
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 1500);
+        }
+      } catch (err) {
+        // Errors are automatically caught and showToast'ed by authFetch
+      }
+    });
+  </script>
+</body>
+</html>

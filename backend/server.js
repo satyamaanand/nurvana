@@ -1,7 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-require('dotenv').config();
+const fs = require('fs');
+
+// Load environment variables from backend/.env or root .env
+if (fs.existsSync(path.join(__dirname, '.env'))) {
+  require('dotenv').config({ path: path.join(__dirname, '.env') });
+} else if (fs.existsSync(path.join(__dirname, '..', '.env'))) {
+  require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+} else {
+  require('dotenv').config();
+}
 
 const connectDB = require('./config/db');
 
@@ -26,7 +35,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const fs = require('fs');
+// fs is already required above
 
 // Serve uploaded static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -34,7 +43,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Local plant images serving with robust extension/space/default fallback
 app.get('/assets/images/plants/:category/:filename.webp', (req, res, next) => {
   const { category, filename } = req.params;
-  const baseDir = path.join(__dirname, '..', 'assets', 'images', 'plants');
+  const baseDir = path.join(__dirname, '..', 'frontend', 'assets', 'images', 'plants');
   
   const mimeTypes = {
     '.webp': 'image/webp',
@@ -93,15 +102,11 @@ app.get('/api/health', (req, res) => {
   res.json({ success: true, message: 'Nurvana Backend API is running successfully' });
 });
 
-// Serve frontend static assets securely (preventing exposing backend or sensitive files)
-app.use('/backend', (req, res) => {
-  res.status(403).send('Access Denied');
-});
-app.use('/.git', (req, res) => {
-  res.status(403).send('Access Denied');
-});
+// Serve frontend static assets
+app.use('/assets', express.static(path.join(__dirname, '..', 'frontend', 'assets')));
 
-app.use(express.static(path.join(__dirname, '..')));
+// Serve frontend static pages
+app.use(express.static(path.join(__dirname, '..', 'frontend', 'pages')));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
